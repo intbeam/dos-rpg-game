@@ -59,16 +59,16 @@ Being a big fan of Roland MT-32, it would be incredibly cool to support MT-32 fo
 
 ## Wanted hardware support at some point
 
-Sound Blaster 16
-Gravis Ultrasound
-Keyboard and mouse
-VGA (Mode 13, Mode X)
-CGA
-SVGA
-3Dfx Glide
-Roland MT-32 / MPU-401
-General Midi
-Etherlink III or NE2000
-
+Sound Blaster 16  
+Gravis Ultrasound  
+Keyboard and mouse  
+VGA (Mode 13, Mode X)  
+CGA  
+SVGA  
+3Dfx Glide  
+Roland MT-32 / MPU-401  
+General Midi  
+Etherlink III or NE2000  
+  
 Note : PC Speaker will likely not be supported as it requires the PIT which is likely needed for other cooler things
 
