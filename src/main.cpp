@@ -18,6 +18,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 // Application entrypoint
 int main(int argc, char** argv)
 {
-    printf("Hello world!");
+    printf("Hello world! Press any key to exit");
+
+    getchar();
     return 0;
 }

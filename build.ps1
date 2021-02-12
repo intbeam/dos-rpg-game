@@ -12,32 +12,62 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 param(
-    [parameter(Mandatory = $false)][switch]$release = $false
+    [parameter(Mandatory = $false)][switch]$release = $false,
+    [parameter(Mandatory = $false)][string]$architecture = "16bit"    
 )
 
+[string]$operatingSystem = "Windows"
 # Watcom install path - assume root
-[string]$watcomInstallPath = "C:\WATCOM"
+[string]$watcomInstallPath = "C:/WATCOM"
+
+# if platform is Unix change install path
+if($IsLinux)
+{    
+    $watcomInstallPath = "/usr/bin/watcom"    
+}
 
 # Retrieve all source code files (c, cpp) from src directory
 $files = (Get-ChildItem -Path "./src" -Filter "*.c*" -Recurse | Where-Object { $_.Extension.ToLowerInvariant() -in (".c", ".cpp")} | Select-Object -ExpandProperty FullName | ForEach-Object { """{0}""" -f $_ }  )
-[string]$fileString = $files | Join-String -Separator " "
 
 # Check environment variables. If Environment contains watcom install path we will assume it has been set correctly
-if($env:Path.contains($watcomInstallPath) -ne $true)
+if($env:PATH.contains($watcomInstallPath) -ne $true)
 {
     # Deconstruct environment path
-    $existingPath = $env:Path -split ";"
+    $existingPath = $env:PATH -split ";"
 
-    # Add watcom paths
-    $existingPath = $existingPath + ("$watcomInstallPath\binnt64", "$watcomInstallPath\binnt")
+
+    if($IsWindows)
+    {
+        # Add watcom paths
+        $existingPath += ("$watcomInstallPath/binnt64", "$watcomInstallPath/binnt")
+    }
+    else
+    {
+        $existingPath += ("$watcomInstallPath/binl")
+    }
+
+    [string]$pathSeparator = ";"
+
+    if($operatingSystem -ne "Windows")
+    {
+        $pathSeparator = ":"
+    }
 
     # Set new PATH environment variables
-    $env:Path = ($existingPath | Join-String -Separator ";")
+    $env:PATH = ($existingPath | Join-String -Separator $pathSeparator)
 
     # Set relevant environment variables
     $env:WATCOM = $watcomInstallPath
-    $env:EDPATH = "$watcomInstallPath\EDDAT"
-    $env:INCLUDE = "$watcomInstallPath\H;$watcomInstallPath\H\NT"
+    $env:EDPATH = "$watcomInstallPath/eddat"
+    
+    if($operatingSystem -eq "Windows")
+    {
+        $env:INCLUDE = "$watcomInstallPath/h;$watcomInstallPath/h/nt"
+    }
+    else
+    {
+        $env:INCLUDE = "$watcomInstallPath/h"
+    }
 }
 
 # Create bin and obj directories if they don't exist
@@ -52,10 +82,23 @@ if(-not (Test-Path "./obj"))
 }
 
 # define wcl arguments here
-[string[]]$wclArguments = ("/fo=""./obj/""", "/bc", "/fe=""./bin/main.exe""")
+[string[]]$wclArguments = ("-fo=""./obj/""", "-bc", "-bt=DOS", "-fe=""./bin/main.exe""")
 
 # append files to compile to arguments
 $wclArguments += $files
 
+# if($release -eq $false)
+# {
+     #$wclArguments += "-d2"
+# }
+
+[string]$command = "wcl"
+
 # Compile and link. Output files to obj directory and put the binary in bin
-& 'wcl.exe' $wclArguments
+Write-Host $architecture
+if($architecture -eq "32bit")
+{
+    $command = "wcl386"
+}
+
+& $command $wclArguments
