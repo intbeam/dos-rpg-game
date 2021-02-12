@@ -15,10 +15,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "main.hpp"
 
-// Application entrypoint
+// Game entrypoint
 int main(int argc, char** argv)
 {
-    printf("Hello world! Press any key to exit");
+    printf("Can't start the game yet because there's nothing here! Press any key to exit");
 
     getchar();
     return 0;
