@@ -27,7 +27,7 @@ if($IsLinux)
 }
 
 # Retrieve all source code files (c, cpp) from src directory
-$files = (Get-ChildItem -Path "./src" -Filter "*.c*" -Recurse | Where-Object { $_.Extension.ToLowerInvariant() -in (".c", ".cpp")} | Select-Object -ExpandProperty FullName | ForEach-Object { """{0}""" -f $_ }  )
+$files = (Get-ChildItem -Path "./src" -Filter "*" -Recurse | Where-Object { $_.Extension.ToLowerInvariant() -in (".c", ".cpp", ".asm")} | Select-Object -ExpandProperty FullName | ForEach-Object { """{0}""" -f $_ }  )
 
 # Check environment variables. If Environment contains watcom install path we will assume it has been set correctly
 if($env:PATH.contains($watcomInstallPath) -ne $true)
@@ -82,7 +82,7 @@ if(-not (Test-Path "./obj"))
 }
 
 # define wcl arguments here
-[string[]]$wclArguments = ("-fo=""./obj/""", "-bc", "-bt=DOS", "-fe=""./bin/main.exe""")
+[string[]]$wclArguments = ("-fo=""./obj/""", "-bt=DOS", "-fe=""./bin/main.exe""")
 
 # append files to compile to arguments
 $wclArguments += $files
@@ -102,3 +102,5 @@ if($architecture -eq "32bit")
 }
 
 & $command $wclArguments
+
+Copy-Item -Path "./assets/*" -Destination "./bin" -Exclude "keep.txt"

@@ -4,7 +4,7 @@
         {
             "label": "Build",
             "type" : "shell",
-            "command": "pwsh.exe",
+            "command": "pwsh",
             "group": {
                 "kind": "build",
                 "isDefault": true

@@ -14,12 +14,34 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 */
 
 #include "main.hpp"
+#include "vgadisplayadapter.hpp"
+#include "vgapixelwriter.hpp"
+#include "spritemanager.hpp"
+#include "tgaimagereader.hpp"
+#include "rasterizer.hpp"
 
 // Game entrypoint
 int main(int argc, char** argv)
 {
-    printf("Can't start the game yet because there's nothing here! Press any key to exit");
+    VgaDisplayAdapter display_adapter;    
+    VgaPixelWriter pixel_writer = VgaPixelWriter(display_adapter.get_surface_dimensions());    
 
+    palette_24bpp pal;
+    SpriteManager manager;
+    TgaImageReader reader;
+    Rasterizer rasterizer;
+    Sprite *sprite;
+    int sprites_loaded;
+
+    reader.load_palette("char.tga", pal);
+
+    display_adapter.set_palette(pal);
+
+    sprite = reader.load_sprite(manager, "char.tga", sprites_loaded);
+
+    rasterizer.draw_sprite(pixel_writer, *sprite, 250, 50);
+    
     getchar();
+    
     return 0;
 }
