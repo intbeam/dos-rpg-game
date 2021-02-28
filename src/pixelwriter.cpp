@@ -5,7 +5,7 @@ PixelWriter::PixelWriter(surface_rect dimensions) : dimensions(dimensions)
 
 }
 
-void PixelWriter::write_pixeldata(int x_origin, int y_origin, const pixel_packet *operations, int packet_count)
+void PixelWriter::set_line_length(int length)
 {
-
+    this->line_length = length;
 }

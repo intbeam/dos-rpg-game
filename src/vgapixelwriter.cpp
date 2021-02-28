@@ -18,13 +18,12 @@ void VgaPixelWriter::write_pixeldata(int x_origin, int y_origin, const pixel_pac
     vga_index = y_origin * this->dimensions.width + x_origin;
 
     for(current_op = 0; current_op < packet_count; current_op++)
-    {
-
-        pixels_written = packetsptr->count;
-
+    {           
         switch(packetsptr->type)
         {
             case PACKET_SINGLE_COLOR:
+                pixels_written = packetsptr->count;
+
                 __asm {
 
                     mov ax, 0a000h
@@ -42,6 +41,7 @@ void VgaPixelWriter::write_pixeldata(int x_origin, int y_origin, const pixel_pac
                 }
             break;
             case PACKET_SOURCE_COPY:
+                pixels_written = packetsptr->count;
                 __asm {
 
                     mov ax, 0a000h
@@ -58,21 +58,17 @@ void VgaPixelWriter::write_pixeldata(int x_origin, int y_origin, const pixel_pac
 
                     rep movsb       // stores the memory at DS:SI+CX in ES:DI, CX number of times
                 }
-            case PACKET_SKIP:            
+            break;
+            case PACKET_SKIP: 
+                pixels_written = packetsptr->count;
             break;
             case PACKET_NEXT_LINE:
-                pixels_written = dimensions.width - 16;
-                line_pixels = -pixels_written;
+                pixels_written = dimensions.width - line_length;                
             break;
-        }
-
+        }        
         vga_index += pixels_written;
-        line_pixels += pixels_written;
         packetsptr++;
     }
-
-
-
 
 }
 

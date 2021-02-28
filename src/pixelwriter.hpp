@@ -23,9 +23,11 @@ class PixelWriter
 {
 protected:
     surface_rect dimensions;
+    int line_length;
 public:
     PixelWriter(surface_rect dimensions);
-    virtual void write_pixeldata(int x_origin, int y_origin, const pixel_packet *operations, int packet_count);    
+    void set_line_length(int width);
+    virtual void write_pixeldata(int x_origin, int y_origin, const pixel_packet *operations, int packet_count) = 0;    
 };
 
 #endif

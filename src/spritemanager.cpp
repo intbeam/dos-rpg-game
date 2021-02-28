@@ -14,7 +14,9 @@ SpriteManager::SpriteManager() : max_sprites(10), max_packets(100), max_pixel_da
 
 void *SpriteManager::alloc_pixel_data(int count)
 {
-    return (this->pixel_data += count);
+    void *ret = this->pixel_data;
+    this->pixel_data += count;
+    return ret;
 }
 
 void SpriteManager::dispose()

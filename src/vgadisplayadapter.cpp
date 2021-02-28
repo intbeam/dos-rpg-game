@@ -28,7 +28,7 @@ void VgaDisplayAdapter::set_palette(palette_24bpp &pal)
         outp(0x3c8, i);
         outp(0x3c9, pal.data[i * 3 + 2] / 4);
         outp(0x3c9, pal.data[i * 3 + 1] / 4);
-                outp(0x3c9, pal.data[i * 3] / 4);
+        outp(0x3c9, pal.data[i * 3] / 4);
 
     }
 }

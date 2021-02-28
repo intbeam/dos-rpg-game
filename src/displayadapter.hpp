@@ -6,7 +6,7 @@
 class DisplayAdapter
 {
 public:
-    virtual surface_rect get_surface_dimensions();
+    virtual surface_rect get_surface_dimensions() = 0;
 };
 
 #endif

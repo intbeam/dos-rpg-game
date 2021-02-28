@@ -1,6 +1,10 @@
 #ifndef TGAIMAGEREADER_HPP
 #define TGAIMAGEREADER_HPP
 
+#include <stdio.h>
+#include <string.h>
+
+
 #include "spritemanager.hpp"
 
 #define TGA_SIGNATURE "TRUEVISION-XFILE.\0"

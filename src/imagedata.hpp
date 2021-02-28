@@ -3,11 +3,11 @@
 
 #include "pixelwriter.hpp"
 
-typedef struct palette_24bpp
+struct palette_24bpp
 {
     int count;
     char data[768];
-} palette;
+};
 
 class Sprite
 {
