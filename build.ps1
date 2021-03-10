@@ -82,7 +82,7 @@ if(-not (Test-Path "./obj"))
 }
 
 # define wcl arguments here
-[string[]]$wclArguments = ("-fo=""./obj/""", "-bt=DOS", "-fe=""./bin/main.exe""")
+[string[]]$wclArguments = ("-fo=""./obj/""", "-bt=DOS", "-xs", "-fe=""./bin/main.exe""")
 
 # append files to compile to arguments
 $wclArguments += $files
