@@ -32,3 +32,13 @@ void VgaDisplayAdapter::set_palette(palette_24bpp &pal)
 
     }
 }
+
+void VgaDisplayAdapter::begin_frame()
+{
+    
+}
+
+void VgaDisplayAdapter::end_frame()
+{
+
+}

@@ -22,6 +22,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #include "tgaimagereader.hpp"
 #include "rasterizer.hpp"
 
+#include "keyboarddevicereader.hpp"
+#include "inputmapper.hpp"
+#include "inputmanager.hpp"
+#include "controlmapper.hpp"
+
 
 // main prototype
 int main(int argc, char** argv);

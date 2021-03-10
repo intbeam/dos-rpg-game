@@ -20,6 +20,22 @@ int main(int argc, char** argv)
 {
     VgaDisplayAdapter display_adapter;    
     VgaPixelWriter pixel_writer = VgaPixelWriter(display_adapter.get_surface_dimensions());    
+    
+    KeyboardDeviceReader keyb;
+    
+    input_data input[5];
+    mapped_input_data mapped[5];
+    int chars_read = 0;
+    PassthroughInputMapper inputmapper = PassthroughInputMapper(keyb);    
+    InputManager input_manager;
+    ControlMapper default_map;
+
+
+    input_manager.add_mapper(inputmapper);
+
+
+    int x = 50, y = 50;
+
 
     palette_24bpp pal;
     SpriteManager manager;
@@ -34,8 +50,45 @@ int main(int argc, char** argv)
 
     sprite = reader.load_sprite(manager, "char.tga", sprites_loaded);
 
-    rasterizer.draw_sprite(pixel_writer, *sprite, 250, 50);
-    
+    while(true)
+    {        
+        //chars_read = inputmapper.read(mapped, 5);
+
+        input_manager.update();
+
+
+        display_adapter.begin_frame();
+
+        rasterizer.draw_rectangle(pixel_writer, 250 + x, 50 + y, 16, 16, 0);
+
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_held())
+        {
+            x--;            
+        }
+
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_held())
+        {
+            x++;
+        }
+
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_held())
+        {
+            y--;
+        }
+
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_held())
+        {
+            y++;
+        }
+        
+
+        rasterizer.draw_sprite(pixel_writer, *sprite, 250 + x, 50 + y);
+        
+        display_adapter.end_frame();
+
+
+    }
+
     getchar();
     
     return 0;
