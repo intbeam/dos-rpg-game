@@ -34,8 +34,8 @@ void VgaDisplayAdapter::set_palette(palette_24bpp &pal)
 }
 
 void VgaDisplayAdapter::begin_frame()
-{
-    
+{    
+    while(!(inp(0x3da) & 8));
 }
 
 void VgaDisplayAdapter::end_frame()

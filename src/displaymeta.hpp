@@ -7,5 +7,12 @@ struct surface_rect
     int height;
 };
 
+struct rect
+{
+    int left;
+    int top;
+    int right;
+    int bottom;
+};
 
 #endif

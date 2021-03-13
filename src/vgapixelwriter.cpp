@@ -5,6 +5,28 @@ VgaPixelWriter::VgaPixelWriter(surface_rect dimensions) : PixelWriter(dimensions
 
 }
 
+void VgaPixelWriter::copy_line(int x_origin, int y_origin, void *source, int numpixels)
+{
+    int vga_index = y_origin * this->dimensions.width + x_origin;
+    
+    __asm
+    {
+        mov ax, 0a000h
+        mov es, ax              // Exta Segment set to VGA segment (0xA000)
+        mov ax, vga_index
+        mov di, ax              // Destination Index set to vga_index (initially sprite location)
+
+        mov cx, numpixels
+        mov ax, source
+        mov si, ax
+
+        rep movsb       // stores the memory at DS:SI+CX in ES:DI, CX number of times
+    }
+
+
+}
+
+
 void VgaPixelWriter::write_pixeldata(int x_origin, int y_origin, const pixel_packet *operations, int packet_count)
 {
     pixel_packet *packetsptr;

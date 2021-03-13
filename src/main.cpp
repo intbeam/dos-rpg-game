@@ -22,10 +22,7 @@ int main(int argc, char** argv)
     VgaPixelWriter pixel_writer = VgaPixelWriter(display_adapter.get_surface_dimensions());    
     
     KeyboardDeviceReader keyb;
-    
-    input_data input[5];
-    mapped_input_data mapped[5];
-    int chars_read = 0;
+
     PassthroughInputMapper inputmapper = PassthroughInputMapper(keyb);    
     InputManager input_manager;
     ControlMapper default_map;
@@ -35,12 +32,16 @@ int main(int argc, char** argv)
 
 
     int x = 50, y = 50;
+    int i, j, c;
 
 
     palette_24bpp pal;
     SpriteManager manager;
     TgaImageReader reader;
-    Rasterizer rasterizer;
+    Rasterizer *rasterizer = new PixelRasterizer(pixel_writer);
+    TileManager *tilemanager = new TileManager(rasterizer, 20, 20);
+    rect source_rect;
+
     Sprite *sprite;
     int sprites_loaded;
 
@@ -48,18 +49,39 @@ int main(int argc, char** argv)
 
     display_adapter.set_palette(pal);
 
+    tilemanager->generate_tiles(5);
+
     sprite = reader.load_sprite(manager, "char.tga", sprites_loaded);
+
+    source_rect.left = 0;
+    source_rect.top = 0;
+    source_rect.right = 20;
+    source_rect.bottom = 20;
+
+    int *map = new int[16 * 10];
+
+
+    for(i = 0; i < 16; i++)
+    {
+        for(j = 0; j < 10; j++)
+        {
+            map[c] = rand() % 5;
+
+            tilemanager->draw_tile(map[c], source_rect, i * 20, j * 20);
+            c++;
+        }
+    }
+
 
     while(true)
     {        
         //chars_read = inputmapper.read(mapped, 5);
+        
 
-        input_manager.update();
+        input_manager.update();        
 
 
         display_adapter.begin_frame();
-
-        rasterizer.draw_rectangle(pixel_writer, 250 + x, 50 + y, 16, 16, 0);
 
         if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_held())
         {
@@ -81,13 +103,16 @@ int main(int argc, char** argv)
             y++;
         }
         
+        
 
-        rasterizer.draw_sprite(pixel_writer, *sprite, 250 + x, 50 + y);
+        rasterizer->draw_sprite(*sprite, 250 + x, 50 + y);
         
         display_adapter.end_frame();
 
 
     }
+
+    delete rasterizer;
 
     getchar();
     

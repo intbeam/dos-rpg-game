@@ -20,12 +20,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #include "vgapixelwriter.hpp"
 #include "spritemanager.hpp"
 #include "tgaimagereader.hpp"
-#include "rasterizer.hpp"
+#include "pixelrasterizer.hpp"
 
 #include "keyboarddevicereader.hpp"
 #include "inputmapper.hpp"
 #include "inputmanager.hpp"
 #include "controlmapper.hpp"
+
+#include "tilemanager.hpp"
 
 
 // main prototype

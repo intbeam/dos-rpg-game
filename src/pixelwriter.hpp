@@ -28,6 +28,7 @@ public:
     PixelWriter(surface_rect dimensions);
     void set_line_length(int width);
     virtual void write_pixeldata(int x_origin, int y_origin, const pixel_packet *operations, int packet_count) = 0;    
+    virtual void copy_line(int x_origin, int y_origin, void *source, int numpixels) = 0;
 };
 
 #endif
