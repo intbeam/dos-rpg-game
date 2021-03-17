@@ -10,7 +10,8 @@
 
 class VgaDisplayAdapter : public DisplayAdapter
 {
-private:    
+private:
+    void wait_vsync();
 public:
     VgaDisplayAdapter();
     surface_rect get_surface_dimensions();
