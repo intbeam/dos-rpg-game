@@ -27,13 +27,14 @@ void PixelRasterizer::draw_rectangle(int x, int y, int width, int height, int co
 void PixelRasterizer::copy_bits(const char *source, int source_width, rect source_rect, int destination_x, int destination_y)
 {
     int w = source_rect.right - source_rect.left;
-    char *lineptr = ((char *)source) + (source_rect.top * source_width);
+
+    char *lineptr = ((char *)source) + (source_rect.top * source_width + source_rect.left);
     int i;    
 
-    for(i = source_rect.top; i < source_rect.bottom; i++)
+    for(i = source_rect.top; i <= source_rect.bottom; i++)
     {
-        lineptr += source_width;
         this->pixel_writer.copy_line(destination_x, destination_y + (i - source_rect.top), lineptr, w);
+        lineptr += source_width;
     }
 
 }

@@ -13,6 +13,7 @@ class VgaDisplayAdapter : public DisplayAdapter
 private:
     void wait_vsync();
 public:
+    int enable_vsync;
     VgaDisplayAdapter();
     surface_rect get_surface_dimensions();
     void set_palette(palette_24bpp &pal);

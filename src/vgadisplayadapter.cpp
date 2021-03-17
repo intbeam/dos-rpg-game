@@ -1,6 +1,6 @@
 #include "vgadisplayadapter.hpp"
 
-VgaDisplayAdapter::VgaDisplayAdapter()
+VgaDisplayAdapter::VgaDisplayAdapter() : enable_vsync(0)
 {
     __asm
     {
@@ -35,7 +35,11 @@ void VgaDisplayAdapter::set_palette(palette_24bpp &pal)
 
 void VgaDisplayAdapter::wait_vsync()
 {
-    while(!(inp(0x3da) & 8));
+    if(enable_vsync)
+    {
+        while((inp(0x3da) & 8));
+        while(!(inp(0x3da) & 8));
+    }
 }
 
 void VgaDisplayAdapter::begin_frame()

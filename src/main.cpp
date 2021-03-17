@@ -27,9 +27,7 @@ int main(int argc, char** argv)
     InputManager input_manager;
     ControlMapper default_map;
 
-
     input_manager.add_mapper(inputmapper);
-
 
     int x = 50, y = 50;
     int i, j, c;
@@ -38,9 +36,20 @@ int main(int argc, char** argv)
     palette_24bpp pal;
     SpriteManager manager;
     TgaImageReader reader;
+
     Rasterizer *rasterizer = new PixelRasterizer(pixel_writer);
     TileManager *tilemanager = new TileManager(rasterizer, 20, 20);
-    rect source_rect;
+    
+    MapLoader *mloader = new RandomMapLoader();
+    Map *themap;    
+    Quadrant *cq;
+    rect srect = {0, 0, 20, 20};
+    Viewport vp;
+    vp.view_coords.left = 40;
+    vp.view_coords.top = 40;
+    vp.view_coords.right = 120;
+    vp.view_coords.bottom = 120;
+
 
     Sprite *sprite;
     int sprites_loaded;
@@ -51,61 +60,56 @@ int main(int argc, char** argv)
 
     tilemanager->generate_tiles(5);
 
-    sprite = reader.load_sprite(manager, "char.tga", sprites_loaded);
+    themap = new Map(1, 1, 32, 32, mloader);
 
-    source_rect.left = 0;
-    source_rect.top = 0;
-    source_rect.right = 20;
-    source_rect.bottom = 20;
-
-    int *map = new int[16 * 10];
+    cq = themap->load_quadrant(0, 0);
 
 
-    for(i = 0; i < 16; i++)
-    {
-        for(j = 0; j < 10; j++)
-        {
-            map[c] = rand() % 5;
-
-            tilemanager->draw_tile(map[c], source_rect, i * 20, j * 20);
-            c++;
-        }
-    }
+    sprite = reader.load_sprite(manager, "char.tga", sprites_loaded); 
 
 
     while(true)
     {        
-        //chars_read = inputmapper.read(mapped, 5);
-        
-
         input_manager.update();        
 
 
         display_adapter.begin_frame();
 
+
+
+
+
         if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_held())
         {
-            x--;            
+            vp.view_coords.left--;            
+            vp.view_coords.right--;
         }
 
         if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_held())
         {
-            x++;
+            vp.view_coords.left++;
+            vp.view_coords.right++;
         }
 
         if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_held())
         {
-            y--;
+            vp.view_coords.top--;
+            vp.view_coords.bottom--;
         }
 
         if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_held())
         {
-            y++;
+            vp.view_coords.top++;
+            vp.view_coords.bottom++;
         }
-        
-        
 
-        rasterizer->draw_sprite(*sprite, 250 + x, 50 + y);
+        //rasterizer->draw_rectangle(50, 50, 120, 120, 50);
+
+        //tilemanager->draw_tile(1, vp.view_coords, 20, 20);
+
+        tilemanager->draw_tiles(cq, vp.view_coords, 50, 50 );
+
+        //rasterizer->draw_sprite(*sprite, 250 + x, 50 + y);
         
         display_adapter.end_frame();
 

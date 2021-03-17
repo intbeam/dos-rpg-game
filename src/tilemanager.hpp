@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "displaymeta.hpp"
 #include "rasterizer.hpp"
+#include "map.hpp"
 
 class TileManager
 {
@@ -23,6 +24,7 @@ public:
     ~TileManager();
     void draw_tile(int tileindex, rect source_rect, int destination_x, int destination_y);
     void generate_tiles(int numtiles);
+    void draw_tiles(Quadrant *quadrant, rect coords, int destination_x, int destination_y);
 };
 
 
