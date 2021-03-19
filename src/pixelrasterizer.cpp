@@ -5,10 +5,10 @@ PixelRasterizer::PixelRasterizer(PixelWriter &pixel_writer) : pixel_writer(pixel
 
 }
 
-void PixelRasterizer::draw_sprite(Sprite &sprite, int x_origin, int y_origin)
+void PixelRasterizer::draw_sprite(Sprite *sprite, int x_origin, int y_origin)
 {
-    this->pixel_writer.set_line_length(sprite.width);
-    this->pixel_writer.write_pixeldata(x_origin, y_origin, sprite.pixelpackets, sprite.packet_count);
+    this->pixel_writer.set_line_length(sprite->width);
+    this->pixel_writer.write_pixeldata(x_origin, y_origin, sprite->pixelpackets, sprite->packet_count);
 }
 
 void PixelRasterizer::draw_rectangle(int x, int y, int width, int height, int color)
@@ -31,7 +31,7 @@ void PixelRasterizer::copy_bits(const char *source, int source_width, rect sourc
     char *lineptr = ((char *)source) + (source_rect.top * source_width + source_rect.left);
     int i;    
 
-    for(i = source_rect.top; i <= source_rect.bottom; i++)
+    for(i = source_rect.top; i < source_rect.bottom; i++)
     {
         this->pixel_writer.copy_line(destination_x, destination_y + (i - source_rect.top), lineptr, w);
         lineptr += source_width;

@@ -1,6 +1,6 @@
 #include "vgadisplayadapter.hpp"
 
-VgaDisplayAdapter::VgaDisplayAdapter() : enable_vsync(0)
+VgaDisplayAdapter::VgaDisplayAdapter() : enable_vsync(1)
 {
     __asm
     {

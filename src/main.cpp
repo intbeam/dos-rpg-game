@@ -45,13 +45,20 @@ int main(int argc, char** argv)
     Quadrant *cq;
     rect srect = {0, 0, 20, 20};
     Viewport vp;
-    vp.view_coords.left = 40;
-    vp.view_coords.top = 40;
-    vp.view_coords.right = 120;
-    vp.view_coords.bottom = 120;
+
+    int update = 0;
+
+    vp.view_coords.left = 0;
+    vp.view_coords.top = 0;
+    vp.view_coords.right = 320;
+    vp.view_coords.bottom = 200;
+    Vector2d playerpos = Vector2d(20, 20);
+    
 
 
     Sprite *sprite;
+    
+
     int sprites_loaded;
 
     reader.load_palette("char.tga", pal);
@@ -67,49 +74,61 @@ int main(int argc, char** argv)
 
     sprite = reader.load_sprite(manager, "char.tga", sprites_loaded); 
 
+    Player player(playerpos, sprite);
+
+    tilemanager->draw_tiles(cq, vp.view_coords, 0, 0);    
+
+    rect screenrect = { 0, 0, 320, 200 };
+    
 
     while(true)
     {        
-        input_manager.update();        
-
+        input_manager.update();
+        
+        player.update(tilemanager, 0);
 
         display_adapter.begin_frame();
 
-
-
-
-
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_held())
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_pressed())
         {
-            vp.view_coords.left--;            
-            vp.view_coords.right--;
+            player.add_direction(Vector2d(1, 0));
+        }
+        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_released())
+        {
+            player.add_direction(Vector2d(-1, 0));
         }
 
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_held())
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_pressed())
         {
-            vp.view_coords.left++;
-            vp.view_coords.right++;
+            player.add_direction(Vector2d(-1, 0));
+        }
+        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_released())
+        {
+            player.add_direction(Vector2d(1, 0));
         }
 
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_held())
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_pressed())
         {
-            vp.view_coords.top--;
-            vp.view_coords.bottom--;
+            player.add_direction(Vector2d(0, 1));
+        }
+        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_released())
+        {
+            player.add_direction(Vector2d(0, -1));
         }
 
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_held())
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_pressed())
         {
-            vp.view_coords.top++;
-            vp.view_coords.bottom++;
+            player.add_direction(Vector2d(0, -1));
+        }
+        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_released())
+        {
+            player.add_direction(Vector2d(0, 1));
         }
 
-        //rasterizer->draw_rectangle(50, 50, 120, 120, 50);
 
-        //tilemanager->draw_tile(1, vp.view_coords, 20, 20);
+        tilemanager->repaint(cq, vp, 0, 0);        
 
-        tilemanager->draw_tiles(cq, vp.view_coords, 50, 50 );
-
-        //rasterizer->draw_sprite(*sprite, 250 + x, 50 + y);
+        player.draw(rasterizer, vp);
         
         display_adapter.end_frame();
 

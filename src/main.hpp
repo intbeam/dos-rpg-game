@@ -33,6 +33,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "viewport.hpp"
 
+#include "actor.hpp"
+
 
 // main prototype
 int main(int argc, char** argv);
