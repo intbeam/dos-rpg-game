@@ -5,6 +5,7 @@
 #include "spritemanager.hpp"
 #include "rasterizer.hpp"
 #include <stdio.h>
+#include "rect.hpp"
 
 class PixelRasterizer : public Rasterizer
 {

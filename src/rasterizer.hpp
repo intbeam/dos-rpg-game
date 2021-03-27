@@ -2,6 +2,7 @@
 #define RASTERIZER_HPP
 
 #include "imagedata.hpp"
+#include "rect.hpp"
 
 class Rasterizer
 {

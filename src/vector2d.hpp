@@ -7,7 +7,7 @@ public:
     Vector2d();
     Vector2d(int x, int y);
     int x;
-    int y;
+    int y;    
 };
 
 #endif

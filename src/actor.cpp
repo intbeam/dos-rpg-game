@@ -11,8 +11,8 @@ void MapActor::update(TileManager *tilemanager, int diff)
     if(this->direction.x != 0 || this->direction.y != 0)
     {        
         Vector2d size = this->get_draw_size();
-        rect irect = { this->location.x, this->location.y, this->location.x + size.x, this->location.y + size.y };
-        tilemanager->invalidate(irect);
+        rect irect = rect(this->location, size);
+        //tilemanager->invalidate(irect);
         this->location.x += this->direction.x;
         this->location.y += this->direction.y;
     }
@@ -37,7 +37,7 @@ Player::Player(Vector2d loc, Sprite *sprite) : MapActor(loc), sprite(sprite)
 
 void Player::draw(Rasterizer *rasterizer, Viewport &viewport)
 {
-    rasterizer->draw_sprite(this->sprite, this->location.x - viewport.view_coords.left, this->location.y - viewport.view_coords.top);    
+    rasterizer->draw_sprite(this->sprite, this->location.x - viewport.view_coords.location.x, this->location.y - viewport.view_coords.location.y);    
 }
 
 Vector2d Player::get_draw_size()

@@ -5,6 +5,7 @@
 #include "spritemanager.hpp"
 #include "rasterizer.hpp"
 #include "tilemanager.hpp"
+#include "rect.hpp"
 
 class Actor
 {

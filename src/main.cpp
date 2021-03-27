@@ -43,15 +43,9 @@ int main(int argc, char** argv)
     MapLoader *mloader = new RandomMapLoader();
     Map *themap;    
     Quadrant *cq;
-    rect srect = {0, 0, 20, 20};
-    Viewport vp;
 
     int update = 0;
-
-    vp.view_coords.left = 0;
-    vp.view_coords.top = 0;
-    vp.view_coords.right = 320;
-    vp.view_coords.bottom = 200;
+    
     Vector2d playerpos = Vector2d(20, 20);
     
 
@@ -65,7 +59,11 @@ int main(int argc, char** argv)
 
     display_adapter.set_palette(pal);
 
-    tilemanager->generate_tiles(5);
+    tilemanager->generate_tiles(10);
+
+    Scene scene = Scene(tilemanager, themap, &manager);
+
+    scene.viewport.view_coords.size = Vector2d(44, 26);
 
     themap = new Map(1, 1, 32, 32, mloader);
 
@@ -74,12 +72,9 @@ int main(int argc, char** argv)
 
     sprite = reader.load_sprite(manager, "char.tga", sprites_loaded); 
 
-    Player player(playerpos, sprite);
+    Player player(playerpos, sprite);        
 
-    tilemanager->draw_tiles(cq, vp.view_coords, 0, 0);    
-
-    rect screenrect = { 0, 0, 320, 200 };
-    
+    int tileindex = 0;
 
     while(true)
     {        
@@ -89,49 +84,58 @@ int main(int argc, char** argv)
 
         display_adapter.begin_frame();
 
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_pressed())
+if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_held())
         {
-            player.add_direction(Vector2d(1, 0));
-        }
-        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_released())
-        {
-            player.add_direction(Vector2d(-1, 0));
+            scene.viewport.view_coords.location.x++;
+            update = 1;
         }
 
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_pressed())
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_held())
         {
-            player.add_direction(Vector2d(-1, 0));
-        }
-        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_West)).is_released())
-        {
-            player.add_direction(Vector2d(1, 0));
-        }
-
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_pressed())
-        {
-            player.add_direction(Vector2d(0, 1));
-        }
-        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_released())
-        {
-            player.add_direction(Vector2d(0, -1));
-        }
-
-        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_pressed())
-        {
-            player.add_direction(Vector2d(0, -1));
-        }
-        else if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_released())
-        {
-            player.add_direction(Vector2d(0, 1));
+            if(scene.viewport.view_coords.location.x > 0)
+            {
+                scene.viewport.view_coords.location.x--;
+                update = 1;
+            }
         }
 
 
-        tilemanager->repaint(cq, vp, 0, 0);        
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_South)).is_held())
+        {
+            scene.viewport.view_coords.location.y++;
+            update = 1;
+        }
 
-        player.draw(rasterizer, vp);
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_North)).is_held())
+        {
+            if(scene.viewport.view_coords.location.y > 0)
+            {
+                scene.viewport.view_coords.location.y--;
+                update = 1;
+            }
+        }
+
+        if(update)
+        {
+            rasterizer->draw_rectangle(
+                50,
+                50, 
+                scene.viewport.view_coords.size.x, 
+                scene.viewport.view_coords.size.y, 30);
+
+            scene.draw_tiles(cq, 50, 50);
+
+            update = 0;
+        }
+
+        //rect tilerect = rect(Vector2d(0,0), Vector2d(tilemanager->tile_width, tilemanager->tile_height));
+
+        //tilemanager->draw_tile(tileindex % 10, tilerect, 50, 50 );
+
+        
+        
         
         display_adapter.end_frame();
-
 
     }
 

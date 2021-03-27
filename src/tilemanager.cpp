@@ -13,7 +13,7 @@ void TileManager::generate_tiles(int numtiles)
 
     for(i = 0; i < size; i++)
     {
-        *ptr = (i / sq);
+        *ptr = (i / sq) + 80;
         ptr++;
     }
 
@@ -42,10 +42,13 @@ void TileManager::draw_tile(int tileindex, rect source_rect, int destination_x, 
 
 }
 
+/*
+
 void TileManager::invalidate(rect invalidate_rect)
 {
     this->invalidate_rects.push_back(invalidate_rect);
 }
+
 
 void TileManager::repaint(Quadrant *quadrant, Viewport view, int destination_x, int destination_y)
 {
@@ -58,7 +61,7 @@ void TileManager::repaint(Quadrant *quadrant, Viewport view, int destination_x, 
             start->right, 
             start->bottom 
         };
-        this->draw_tiles(quadrant, redrawcoords, start->left - view.view_coords.left, start->top - view.view_coords.top);
+        this->draw_tiles(quadrant, redrawcoords, start->.location.x - view.view_coords.location.x, start->location.y - view.view_coords.location.y);
     }
 
     this->invalidate_rects.clear();
@@ -143,3 +146,5 @@ void TileManager::draw_tiles(Quadrant *quadrant, rect coords, int destination_x,
     }
 
 }
+
+*/
