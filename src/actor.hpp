@@ -6,10 +6,12 @@
 #include "rasterizer.hpp"
 #include "tilemanager.hpp"
 #include "rect.hpp"
+#include "scene.hpp"
 
 class Actor
 {
 public:
+    virtual void update(Scene *scene, int diff) = 0;
 };
 
 class MapActor : public Actor
@@ -22,7 +24,13 @@ public:
     void add_direction(Vector2d vec);    
     virtual void draw(Rasterizer *rasterizer, Viewport &viewport) = 0;
     virtual Vector2d get_draw_size() = 0;
-    virtual void update(TileManager *tilemanager, int diff);
+    virtual void update(Scene *scene, int diff);
+};
+
+class PaletteAnimator : Actor
+{
+public:
+    void update(Scene *scene, int diff);
 };
 
 class Player : public MapActor
@@ -32,7 +40,7 @@ private:
 public:
     Player(Vector2d loc, Sprite *sprite);
     void draw(Rasterizer *rasterizer, Viewport &viewport);
-    void update(TileManager *tilemanager, int diff);
+    void update(Scene *scene, int diff);
     Vector2d get_draw_size();
 };
 

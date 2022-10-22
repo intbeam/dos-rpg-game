@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
     input_manager.add_mapper(inputmapper);
 
-    int x = 50, y = 50;
+    int x = 0, y = 0;
     int i, j, c;
 
 
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 
     Scene scene = Scene(tilemanager, themap, &manager);
 
-    scene.viewport.view_coords.size = Vector2d(44, 26);
+    scene.viewport.view_coords.size = Vector2d(320, 200);
 
     themap = new Map(1, 1, 32, 32, mloader);
 
@@ -80,11 +80,13 @@ int main(int argc, char** argv)
     {        
         input_manager.update();
         
-        player.update(tilemanager, 0);
+        player.update(&scene, 0);
 
         display_adapter.begin_frame();
 
-if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_held())
+
+
+        if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_held())
         {
             scene.viewport.view_coords.location.x++;
             update = 1;
@@ -114,26 +116,13 @@ if(input_manager.get_state(default_map.map_virtual_key(Player_Move_East)).is_hel
                 update = 1;
             }
         }
-
+        
         if(update)
         {
-            rasterizer->draw_rectangle(
-                50,
-                50, 
-                scene.viewport.view_coords.size.x, 
-                scene.viewport.view_coords.size.y, 30);
-
-            scene.draw_tiles(cq, 50, 50);
-
+            scene.draw_tiles(cq, 0, 0);
             update = 0;
         }
-
-        //rect tilerect = rect(Vector2d(0,0), Vector2d(tilemanager->tile_width, tilemanager->tile_height));
-
-        //tilemanager->draw_tile(tileindex % 10, tilerect, 50, 50 );
-
-        
-        
+ 
         
         display_adapter.end_frame();
 

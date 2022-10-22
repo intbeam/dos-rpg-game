@@ -6,7 +6,7 @@ MapActor::MapActor(Vector2d location) : location(location)
     this->direction.y = 0;
 }
 
-void MapActor::update(TileManager *tilemanager, int diff)
+void MapActor::update(Scene *scene, int diff)
 {
     if(this->direction.x != 0 || this->direction.y != 0)
     {        
@@ -25,9 +25,9 @@ void MapActor::add_direction(Vector2d vec)
 }
 
 
-void Player::update(TileManager *tilemanager, int diff)
+void Player::update(Scene *scene, int diff)
 {
-    MapActor::update(tilemanager, diff);
+    MapActor::update(scene, diff);
 }
 
 Player::Player(Vector2d loc, Sprite *sprite) : MapActor(loc), sprite(sprite)

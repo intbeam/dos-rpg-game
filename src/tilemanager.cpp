@@ -13,7 +13,7 @@ void TileManager::generate_tiles(int numtiles)
 
     for(i = 0; i < size; i++)
     {
-        *ptr = (i / sq) + 80;
+        *ptr = (i / sq) + 59 + rand() % 3;
         ptr++;
     }
 
@@ -34,117 +34,11 @@ void TileManager::draw_tile(int tileindex, rect source_rect, int destination_x, 
     if(this->tile_data == 0)
     {
         throw "tile data is null";
-    }    
+    }
+    if(source_rect.size.x <= 0 || source_rect.size.y <= 0)
+        return;
 
     char *startptr = this->tile_data + (this->tile_width * this->tile_height * tileindex);
 
     rasterizer->copy_bits(startptr, tile_width, source_rect, destination_x, destination_y);
-
 }
-
-/*
-
-void TileManager::invalidate(rect invalidate_rect)
-{
-    this->invalidate_rects.push_back(invalidate_rect);
-}
-
-
-void TileManager::repaint(Quadrant *quadrant, Viewport view, int destination_x, int destination_y)
-{
-    rect *start;
-    for(start = this->invalidate_rects.begin(); start < this->invalidate_rects.end(); start++)
-    {
-        rect redrawcoords = { 
-            start->left, 
-            start->top, 
-            start->right, 
-            start->bottom 
-        };
-        this->draw_tiles(quadrant, redrawcoords, start->.location.x - view.view_coords.location.x, start->location.y - view.view_coords.location.y);
-    }
-
-    this->invalidate_rects.clear();
-}
-
-void TileManager::draw_tiles(Quadrant *quadrant, rect coords, int destination_x, int destination_y)
-{
-    int qx = coords.left / this->tile_width;
-    int qxoffset = coords.left % this->tile_width;
-    int qy = coords.top / this->tile_height;
-    int qyoffset = coords.top % this->tile_height;
-
-    int qw = (coords.right - coords.left) / this->tile_width;
-    int qh = (coords.bottom - coords.top) / this->tile_height;
-    
-    if(qw == 0)
-        qw = 1;
-
-    if(qh == 0)
-        qh = 1;
-    
-
-    int qxc = 0;
-    int qyc = 0;
-    MapElement *elementptr;
-    
-    rect tilecoords = { 0, 0, 0, 0};
-
-    for(int y = 0; y <= qh; y++)
-    {        
-        if(y == 0)
-        {
-            tilecoords.top = qyoffset;
-        }
-        else
-        {
-            tilecoords.top = 0;
-        }
-
-        if(y == qh)
-        {
-            tilecoords.bottom = qyoffset;
-        }
-        else
-        {
-            tilecoords.bottom = this->tile_height;
-        }
-
-        elementptr = quadrant->get_element_at(qx, qy + y);
-        
-        qxc = 0;
-
-        for(int x = 0; x <= qw; x++)
-        {            
-            if(x == 0)
-            {
-                tilecoords.left = qxoffset;
-            }
-            else
-            {
-                tilecoords.left = 0;
-            }
-
-            if(x == qw)
-            {
-                tilecoords.right = qxoffset;
-            }
-            else
-            {
-                tilecoords.right = this->tile_width;
-            }
-
-            this->draw_tile(elementptr->get_tile_index(), tilecoords, destination_x + qxc - qxoffset + tilecoords.left, destination_y + qyc - qyoffset + tilecoords.top);
-
-            elementptr++;
-
-            qxc += this->tile_width;
-
-        }
-
-        qyc += this->tile_height;
-    }
-
-}
-
-*/

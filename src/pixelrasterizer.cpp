@@ -11,7 +11,7 @@ void PixelRasterizer::draw_sprite(Sprite *sprite, int x_origin, int y_origin)
     this->pixel_writer.write_pixeldata(x_origin, y_origin, sprite->pixelpackets, sprite->packet_count);
 }
 
-void PixelRasterizer::draw_rectangle(int x, int y, int width, int height, int color)
+void PixelRasterizer::fill_rectangle(int x, int y, int width, int height, int color)
 {
     this->pixel_writer.set_line_length(width);
 
@@ -24,11 +24,25 @@ void PixelRasterizer::draw_rectangle(int x, int y, int width, int height, int co
 
 }
 
+void PixelRasterizer::draw_rectangle(int x, int y, int width, int height, int color)
+{
+    this->pixel_writer.set_line_length(width);
+
+    pixel_packet line[2] = { { width, color, 0, PACKET_SINGLE_COLOR } };
+    pixel_packet border[3] = {{1, color, 0, PACKET_SINGLE_COLOR}, {width - 2, 0, 0, PACKET_SKIP}, {1, color, 0, PACKET_SINGLE_COLOR}};
+
+    this->pixel_writer.write_pixeldata(x, y, line, 1);
+    for(int i = 1; i < height - 1; i++)
+    {
+        this->pixel_writer.write_pixeldata(x, y + i, border, width > 1 ? 3 : 1);
+    }
+    this->pixel_writer.write_pixeldata(x, y + height - 1, line, 1);
+}
+
 void PixelRasterizer::copy_bits(const char *source, int source_width, rect source_rect, int destination_x, int destination_y)
 {    
     char *lineptr = ((char *)source) + (source_rect.location.y * source_width + source_rect.location.x);
-    int i;    
-
+    int i;
     for(i = 0; i < source_rect.size.y; i++)
     {
         this->pixel_writer.copy_line(destination_x, destination_y + i, lineptr, source_rect.size.x);

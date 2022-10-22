@@ -5,6 +5,7 @@ int KeyboardDeviceReader::get_device_type()
     return 1;
 }
 
+
 int KeyboardDeviceReader::read(input_data *buf, int maxlength)
 {
     char scancode;
@@ -22,6 +23,9 @@ int KeyboardDeviceReader::read(input_data *buf, int maxlength)
 
     *(char*)(0x0040001A) = 0x20;
     *(char*)(0x0040001C) = 0x20;
+
+    if(scancode == 0)
+        return 0;
 
     if((scancode & 0x80) == 0x80)
     {

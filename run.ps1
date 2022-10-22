@@ -28,4 +28,4 @@ else {
 
 }
 
-& $binaryPath ('main.exe', '-exit')
+& $binaryPath ('main.exe', '-exit', '-conf', '../tools/dosbox/dos-game.conf')

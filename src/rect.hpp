@@ -8,7 +8,9 @@ struct absrect
     int left;
     int top;
     int right;
-    int bottom;    
+    int bottom;
+
+    Vector2d get_size();
 };
 
 struct rect

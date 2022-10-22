@@ -7,66 +7,82 @@ Scene::Scene(TileManager *tile_manager, Map *map, SpriteManager *sprite_manager)
 
 void Scene::draw_tiles(Quadrant *quadrant, int destination_x, int destination_y)
 {
-    int tw = this->viewport.view_coords.size.x / tile_manager->tile_width;
-    int th = this->viewport.view_coords.size.y / tile_manager->tile_height;
+    Scene::draw_tiles(quadrant, this->viewport, destination_x, destination_y);
+}
 
-    int twm = this->viewport.view_coords.size.x % tile_manager->tile_width;
-    int thm = this->viewport.view_coords.size.y % tile_manager->tile_height;
+void Scene::draw_tiles(Quadrant *quadrant, Viewport &viewport, int destination_x, int destination_y)
+{
+    int tw = viewport.view_coords.size.x / tile_manager->tile_width;
+    int th = viewport.view_coords.size.y / tile_manager->tile_height;
 
-    int xdata = this->viewport.view_coords.location.x / tile_manager->tile_width;
-    int ydata = this->viewport.view_coords.location.y / tile_manager->tile_height;
+    int twm = viewport.view_coords.size.x % tile_manager->tile_width;
+    int thm = viewport.view_coords.size.y % tile_manager->tile_height;
 
-    int xoffset = this->viewport.view_coords.location.x % tile_manager->tile_width;
-    int yoffset = this->viewport.view_coords.location.y % tile_manager->tile_height;
+    if(twm > 0)
+        tw++;
+    
+    if(thm > 0)
+        th++;
 
-    Vector2d size = Vector2d(tile_manager->tile_width, tile_manager->tile_height);
-    //Vector2d tilesourcepos = Vector2d(0,0);
+    int xdata = viewport.view_coords.location.x / tile_manager->tile_width;
+    int ydata = viewport.view_coords.location.y / tile_manager->tile_height;
 
-    absrect tilesource_rect = {0, 0, tile_manager->tile_width, tile_manager->tile_height};
-    int tindex = 3;
+    int xoffset = viewport.view_coords.location.x % tile_manager->tile_width;
+    int yoffset = viewport.view_coords.location.y % tile_manager->tile_height;
 
     for(int y = 0; y <= th; y++)
     {
+        
+        absrect tilesource_rect = {0, 0, tile_manager->tile_width, tile_manager->tile_height};
+        
+        Vector2d pos = Vector2d(
+            0,
+            y * tile_manager->tile_height - yoffset
+        );
 
+        if(pos.y < 0)
+        {
+            tilesource_rect.top -= pos.y;
+            pos.y = 0;
+        }
+
+        int h = tilesource_rect.bottom - tilesource_rect.top;
+
+        if(pos.y + h > viewport.view_coords.size.y)
+        {
+            tilesource_rect.bottom -= (pos.y + h) - viewport.view_coords.size.y; 
+        }
 
         for(int x = 0; x <= tw; x++)
         {
             MapElement *mapdata = quadrant->get_element_at(xdata + x, ydata + y);
 
+            int tindex = mapdata->get_tile_index();
             
-            Vector2d pos = Vector2d(
-                x * tile_manager->tile_width - xoffset, 
-                y * tile_manager->tile_height - yoffset
-            );
+            pos.x = x * tile_manager->tile_width - xoffset;
 
-            if(x == 0)
-            {
-                tilesource_rect.left = xoffset;
-                pos.x += xoffset;
-                tindex = 2;
-            }
-            else if(x == tw)
-            {
-                tilesource_rect.right = xoffset + twm;
-                tilesource_rect.left = xoffset - twm;
-                pos.x += xoffset;
-                tindex = 1;
-            }
-            else
-            {
-                tilesource_rect.left = 0;
-                tilesource_rect.right = tile_manager->tile_height;
-                tindex = 0;
-            }
+            tilesource_rect.left = 0;
+            tilesource_rect.right = tile_manager->tile_width;
 
+            if(pos.x < 0)
+            {
+                tilesource_rect.left -= pos.x;
+                pos.x = 0;
+            }
+            
+            int w = tilesource_rect.right - tilesource_rect.left;
+
+            if((pos.x + w > viewport.view_coords.size.x))
+            {
+                tilesource_rect.right -= (pos.x + w) - viewport.view_coords.size.x;             
+            }
 
             tile_manager->draw_tile(
                 tindex, 
-                    rect::from_absolute(tilesource_rect),
-                    pos.x + destination_x,
-                    pos.y + destination_y
-                );
-
+                rect::from_absolute(tilesource_rect),
+                pos.x + destination_x,
+                pos.y + destination_y
+            ); 
         }
     }
 }
